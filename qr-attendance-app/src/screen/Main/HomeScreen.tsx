@@ -6,10 +6,13 @@ import FormReturn from '../../components/ui/Main/Home/FormReturn';
 import Spacer from '../../components/ui/Shared/Spacer';
 
 type Student = {
+  Administradores: string;
   Curso: string;
-  Documento: string;
+  Documento: number;
+  Genero: string;
   Nombres: string;
   Registro: string;
+  Tipo_de_documento: string;
 };
 
 const HomeScreen = () => {
@@ -23,16 +26,35 @@ const HomeScreen = () => {
 
   const handleSearch = async () => {
     try {
+            // Actualizar el campo Registro a 1
+            const newData = {
+              "Registro": 1
+            };
+      
+            const options = {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(newData),
+            };
+      
+            const updateResponse = await fetch(`http://192.168.1.42:3000/api/estudiantes/${id}`, options);
+            const updateData = await updateResponse.json();
+      
+            if (updateData.success) {
+              alert('Registro exitoso');
+            } else {
+              alert('Error al actualizar el registro');
+            }
+          } catch (error) {
+            console.error('Error fetching data: ', error);
+          }
+          
       const response = await fetch(`http://192.168.1.42:3000/api/estudiantes/${id}`);
       const data = await response.json();
       setStudent(data.data);
-    } catch (error) {
-      console.error('Error fetching data: ', error);
-    }
-  };
 
-  // Aquí puedes usar los datos del estudiante como necesites
-  console.log(student);
+
+  };
 
   return (
     <View style={styles.container}>
@@ -52,6 +74,16 @@ const HomeScreen = () => {
         </View>
       </View>
 
+      <View style={styles.idInputContainer}>
+        <TextInput
+          value={id}
+          onChangeText={setId}
+          placeholder="Enter ID"
+          style={styles.input}
+        />
+        <Button title="Search" onPress={handleSearch} />
+      </View>
+
       <View style={styles.titleContainer}>
         <Text style={styles.title}>Entrada comedor escolar</Text>
       </View>
@@ -64,26 +96,24 @@ const HomeScreen = () => {
             <CameraView isActive={isCameraActive} />
           </View>
         ) : (
-          <View style={styles.idInputContainer}>
-            <TextInput
-              value={id}
-              onChangeText={setId}
-              placeholder="Enter ID"
-              style={styles.input}
-            />
-            <Button title="Search" onPress={handleSearch} />
-          </View>
+          student && (
+            <View>
+              <Text>{`Nombre: ${student.Nombres}`}</Text>
+              <Text>{`Documento: ${student.Documento}`}</Text>
+              <Text>{`Curso: ${student.Curso}`}</Text>
+              <Text>{`Registro: ${student.Registro}`}</Text>
+            </View>
+          )
         )}
       </View>
-
-      {student && (
-        <FormReturn studentData={student} />
-      )}
     </View>
   );
 };
 
 // ... el resto de tu código
+
+
+
 
 
 const styles = StyleSheet.create({

@@ -43,6 +43,8 @@ function Login() {
         */
 
         // Redirigir al usuario a la página de registros
+
+        
         navigation.navigate('BottomTabNavigation');
       } else if (data.message) {
         Alert.alert(data.message);
