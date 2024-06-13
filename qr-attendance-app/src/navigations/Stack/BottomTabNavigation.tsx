@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../../screen/Main/HomeScreen';
 import ReportScreen from '../../screen/Main/ReportScreen';
 import SpecifReportScreen from '../../screen/Main/SpecifReportScreen';
-import CoursesScreen from '../../screen/Main/CoursesScreen';
+import Cursos from '../../screen/Main/CoursesScreen';
 import { COLORS, icons } from '../../constants';
 
 const Tab = createBottomTabNavigator();
@@ -80,7 +80,7 @@ const BottomTabNavigation = () => {
       />
       <Tab.Screen
         name="Courses"
-        component={CoursesScreen}
+        component={Cursos}
         options={{
           tabBarIcon: ({ focused }) => (
             <Image

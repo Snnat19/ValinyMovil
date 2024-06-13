@@ -1,29 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import ToggleCameraButton from '../../components/ui/Main/Home/ToggleCameraButton';
 import CameraView from '../../components/ui/Main/Home/CameraView';
 import FormReturn from '../../components/ui/Main/Home/FormReturn';
 import Spacer from '../../components/ui/Shared/Spacer';
 
+type Student = {
+  Curso: string;
+  Documento: string;
+  Nombres: string;
+  Registro: string;
+};
+
 const HomeScreen = () => {
   const [isCameraActive, setIsCameraActive] = useState(false);
-  const [studentData, setStudentData] = useState<null | object>(null);
   const [id, setId] = useState('');
+  const [student, setStudent] = useState<Student | null>(null);
 
   const handleToggleCamera = (isActive) => {
     setIsCameraActive(isActive);
-    setStudentData(null);
   };
 
-  const handleScannedData = (data) => {
-    setStudentData({
-      name: 'John Doe',
-      document: data,
-      course: 'Course A',
-      jornada: 'Morning',
-      attendanceType: 'Present',
-    });
+  const handleSearch = async () => {
+    try {
+      const response = await fetch(`http://192.168.1.42:3000/api/estudiantes/${id}`);
+      const data = await response.json();
+      setStudent(data.data);
+    } catch (error) {
+      console.error('Error fetching data: ', error);
+    }
   };
+
+  // Aquí puedes usar los datos del estudiante como necesites
+  console.log(student);
 
   return (
     <View style={styles.container}>
@@ -52,7 +61,7 @@ const HomeScreen = () => {
       <View style={styles.mainContent}>
         {isCameraActive ? (
           <View style={styles.cameraContainer}>
-            <CameraView isActive={isCameraActive} onScanned={handleScannedData} />
+            <CameraView isActive={isCameraActive} />
           </View>
         ) : (
           <View style={styles.idInputContainer}>
@@ -62,17 +71,20 @@ const HomeScreen = () => {
               placeholder="Enter ID"
               style={styles.input}
             />
-            <Button title="Search" onPress={() => handleScannedData(id)} />
+            <Button title="Search" onPress={handleSearch} />
           </View>
         )}
       </View>
 
-      {studentData && (
-        <FormReturn studentData={studentData} />
+      {student && (
+        <FormReturn studentData={student} />
       )}
     </View>
   );
 };
+
+// ... el resto de tu código
+
 
 const styles = StyleSheet.create({
   container: {
