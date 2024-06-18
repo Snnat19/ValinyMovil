@@ -25,7 +25,7 @@ function Login() {
   
     // Realizar la solicitud a la API
     try {
-      const response = await fetch('http://192.168.1.42:3000/api/administradores/authenticate', options);
+      const response = await fetch('http://192.168.1.19:3000/api/administradores/authenticate', options);
       const data = await response.json();
 
       // Aquí puedes manejar la respuesta de la API

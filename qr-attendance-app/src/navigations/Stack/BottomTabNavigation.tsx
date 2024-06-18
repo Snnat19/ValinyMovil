@@ -4,7 +4,7 @@ import { View, Image, Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../../screen/Main/HomeScreen';
 import ReportScreen from '../../screen/Main/ReportScreen';
-import SpecifReportScreen from '../../screen/Main/SpecifReportScreen';
+import ReporteEspecifico from '../../screen/Main/SpecifReportScreen';
 import Cursos from '../../screen/Main/CoursesScreen';
 import { COLORS, icons } from '../../constants';
 
@@ -62,8 +62,8 @@ const BottomTabNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="SpecifReport"
-        component={SpecifReportScreen}
+        name="ReporteEspecifico"
+        component={ReporteEspecifico}
         options={{
           tabBarIcon: ({ focused }) => (
             <Image
