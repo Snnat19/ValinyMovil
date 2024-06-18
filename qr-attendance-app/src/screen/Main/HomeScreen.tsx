@@ -27,7 +27,6 @@ const HomeScreen = () => {
     // maneja los datos escaneados aquí
     console.log(data.text);
   };
-
   const handleSearch = async () => {
     try {
             // Actualizar el campo Registro a 1
@@ -89,7 +88,7 @@ const HomeScreen = () => {
       </View>
 
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>Entrada comedor escolar</Text>
+        <Text style={styles.title}>Entrada al aula</Text>
       </View>
 
       <Spacer vertical={20} />
@@ -97,7 +96,7 @@ const HomeScreen = () => {
       <View style={styles.mainContent}>
         {isCameraActive ? (
           <View style={styles.cameraContainer}>
-           <CameraView isActive={isCameraActive} onScanned={handleScanned} />
+            <CameraView isActive={isCameraActive}  onScanned={handleScanned}/>
           </View>
         ) : (
           student && (
