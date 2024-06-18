@@ -17,7 +17,7 @@ function Cursos() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://192.168.101.85:3000/api/estudiantes');
+        const response = await fetch('http://192.168.1.42:3000/api/estudiantes');
         const data = await response.json();
         setStudents(data.data);
       } catch (error) {
