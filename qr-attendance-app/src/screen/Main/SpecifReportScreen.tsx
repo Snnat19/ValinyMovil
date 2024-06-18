@@ -88,4 +88,4 @@ const ReporteEspecifico: React.FC<ReporteEspecificoProps> = ({ setToken }) => {
   )
 }
 
-export default SpecifReportScreen
+export default SpecifReportScreen;
