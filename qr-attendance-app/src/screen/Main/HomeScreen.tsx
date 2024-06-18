@@ -20,16 +20,13 @@ const HomeScreen = () => {
   const [id, setId] = useState('');
   const [student, setStudent] = useState<Student | null>(null);
 
-
   const handleToggleCamera = (isActive: boolean) => {
     setIsCameraActive(isActive);
   };
-
   const handleScanned = (data: { text: string }) => {
     // maneja los datos escaneados aquí
     console.log(data.text);
   };
-  
   const handleSearch = async () => {
     try {
             // Actualizar el campo Registro a 1
@@ -43,7 +40,7 @@ const HomeScreen = () => {
               body: JSON.stringify(newData),
             };
       
-            const updateResponse = await fetch(`http://192.168.1.42:3000/api/estudiantes/${id}`, options);
+            const updateResponse = await fetch(`http://192.168.185.244:3000/api/estudiantes/${id}`, options);
             const updateData = await updateResponse.json();
       
             if (updateData.success) {
@@ -55,7 +52,7 @@ const HomeScreen = () => {
             console.error('Error fetching data: ', error);
           }
           
-      const response = await fetch(`http://192.168.1.42:3000/api/estudiantes/${id}`);
+      const response = await fetch(`http://192.168.185.244:3000/api/estudiantes/${id}`);
       const data = await response.json();
       setStudent(data.data);
 
@@ -99,7 +96,7 @@ const HomeScreen = () => {
       <View style={styles.mainContent}>
         {isCameraActive ? (
           <View style={styles.cameraContainer}>
-            <CameraView isActive={isCameraActive} onScanned={handleScanned}/>
+            <CameraView isActive={isCameraActive}  onScanned={handleScanned}/>
           </View>
         ) : (
           student && (
