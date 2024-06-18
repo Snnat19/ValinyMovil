@@ -41,7 +41,7 @@ const HomeScreen = () => {
               body: JSON.stringify(newData),
             };
       
-            const updateResponse = await fetch(`http://192.168.185.244:3000/api/estudiantes/${id}`, options);
+            const updateResponse = await fetch(`http://192.168.101.85:3000/api/estudiantes/${id}`, options);
             const updateData = await updateResponse.json();
       
             if (updateData.success) {
@@ -53,7 +53,7 @@ const HomeScreen = () => {
             console.error('Error fetching data: ', error);
           }
           
-      const response = await fetch(`http://192.168.185.244:3000/api/estudiantes/${id}`);
+      const response = await fetch(`http://192.168.101.85:3000/api/estudiantes/${id}`);
       const data = await response.json();
       setStudent(data.data);
 

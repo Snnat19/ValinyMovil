@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, Button, Alert } from 'react-native';
+import { View, Text, TextInput, Button, Alert, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 //import { UserContext } from '../App'; // Importa el contexto
 
@@ -25,7 +25,7 @@ function Login() {
   
     // Realizar la solicitud a la API
     try {
-      const response = await fetch('http://192.168.185.244:3000/api/administradores/authenticate', options);
+      const response = await fetch('http://192.168.101.85:3000/api/administradores/authenticate', options);
       const data = await response.json();
 
       // Aquí puedes manejar la respuesta de la API
@@ -56,28 +56,112 @@ function Login() {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: 24, marginBottom: 20 }}>DEVIU SYSTEM</Text>
-      <Text style={{ fontSize: 18, marginBottom: 10 }}>¡Bienvenido! Es un gusto tenerte de vuelta!</Text>
-      <TextInput
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 20, paddingLeft: 10 }}
-        onChangeText={setUsuario}
-        value={usuario}
-        placeholder="Ingresa tu usuario"
+
+    <View style={styles.container}>
+      <View style={styles.formContainer}>
+       <Image
+        source={require('./../../../assets/logonegro.png')} 
+        style={styles.logo}
       />
-      <TextInput
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 20, paddingLeft: 10 }}
-        onChangeText={setContraseña}
-        value={contraseña}
-        placeholder="Ingresa tu contraseña"
-        secureTextEntry
-      />
-      <Button
-        title="Iniciar sesión"
-        onPress={handleSubmit}
-      />
-    </View>
+  <Text style={styles.title}>DEVIU SYSTEM</Text>
+  <Text style={styles.subtitle}>¡Bienvenido!</Text>
+  <Text style={styles.subtitle}>Es un gusto tenerte de vuelta</Text>
+   
+  <View style={styles.inputGroup}>
+          <Text style={styles.label}>Usuario:</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={setUsuario}
+            value={usuario}
+            placeholder="Ingresa tu usuario"
+          />
+        </View>
+        
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Contraseña:</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={setContraseña}
+            value={contraseña}
+            placeholder="Ingresa tu contraseña"
+            secureTextEntry
+          />
+        </View>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleSubmit}
+        >
+          <Text style={styles.buttonText}>Iniciar sesión</Text>
+        </TouchableOpacity>
+</View>
+</View>
+    
   );
 }
 
+const styles = {
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0', 
+    padding: 20, 
+  },
+  formContainer: {
+    backgroundColor: 'white', 
+    padding: 20,
+    borderRadius: 10,
+    width: '100%', 
+    maxWidth: 400, 
+    alignItems: 'center', 
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 26,
+    marginBottom: 10, 
+    fontWeight: 'bold',
+  },
+  subtitle: {
+    fontSize: 18,
+    marginBottom: 20, 
+  },
+  inputGroup: {
+    marginBottom: 5,
+    width: '100%',
+    maxWidth: 300,
+  },
+  label: {
+    fontSize: 12,
+    color: '#0E0F2A', 
+    marginBottom: 5,
+  },
+    input: {
+      height: 40,
+      borderColor: '#D8D8D8',
+      borderWidth: 1,
+      marginBottom: 20,
+      paddingLeft: 10,
+      width: '100%',
+      maxWidth: 300,
+      borderRadius: 10, 
+  },
+  button: {
+    width: '100%',
+    maxWidth: 300,
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: '#007bff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+};
 export default Login;

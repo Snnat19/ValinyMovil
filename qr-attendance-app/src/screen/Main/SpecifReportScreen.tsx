@@ -31,7 +31,7 @@ const ReporteEspecifico: React.FC<ReporteEspecificoProps> = ({ setToken }) => {
   useEffect(() => {
     const cargarEstudiantes = async () => {
       try {
-        const response = await fetch("http://192.168.185.244:3000/api/estudiantes");
+        const response = await fetch("http://192.168.101.85:3000/api/estudiantes");
         const data: Estudiante[] = await response.json();
         console.log("Datos de estudiantes:", data); // Verificar datos de estudiantes recibidos
         setEstudiantes(data);
