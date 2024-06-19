@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useRef, useContext  } from 'react';
-import { View, Text, Button, Alert, FlatList,ScrollView, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-//import { UserContext } from '../App'; // Importa el contexto
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, ScrollView, StyleSheet } from 'react-native';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system';
 
 type Student = {
   Asistencia: number;
@@ -15,25 +16,7 @@ const Reportes = () => {
   const [students, setStudents] = useState<Student[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showPdf, setShowPdf] = useState(false);
-  const navigation = useNavigation();
   const [admin, setAdmin] = useState([]);
- // const { userData } = useContext(UserContext);
-  const fecha = new Date();
-  const fechaFormateada = `${fecha.getDate()}-${fecha.getMonth() + 1}-${fecha.getFullYear()}`;
-
- // const [token, setToken] = useState(null);
-
-  //console.log(userData.ID_Admin);
-/*
-  useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-
-    if (storedToken) {
-      setToken(storedToken);
-      console.log(token);
-    }
-  }, [token]);
-*/
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,8 +24,6 @@ const Reportes = () => {
         const response = await fetch('http://192.168.1.42:3000/api/porcentajes/porcentaje_registros');
         const data = await response.json();
         setStudents(data.data);
-        // renderBarChart(response.data.data);
-        // renderDonutChart(response.data.data);
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
@@ -50,58 +31,72 @@ const Reportes = () => {
 
     fetchData();
   }, []);
-/*
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`http://192.168.1.42:3000/api/administradores/${userData.ID_Admin}`);
-        const data = await response.json();
-        setAdmin(data.data);
-  
-      } catch (error) {
-        console.error('Error fetching data: ', error);
-      }
-    };
-  
-      fetchData();
-    }, []);
-*/
-  const handleMenu = () => {
-    setIsMenuOpen(true);
+
+  const createPdf = async () => {
+    const fecha = new Date();
+    const fechaFormateada = `${fecha.getDate()}-${fecha.getMonth() + 1}-${fecha.getFullYear()}`;
+    const pdfFileName = `Registro_de_cursos_${fechaFormateada}.pdf`;
+
+    const htmlContent = `
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 30px; }
+            .header { font-size: 24px; margin-bottom: 10px; }
+            .subheader { font-size: 18px; margin-bottom: 5px; }
+            .table { width: 100%; border-collapse: collapse; }
+            .table, .table th, .table td { border: 1px solid black; }
+            .table th, .table td { padding: 10px; text-align: left; }
+          </style>
+        </head>
+        <body>
+          <div>
+            <h1 class="header">Reportes Diarios</h1>
+            <h2 class="subheader">Fecha: ${fechaFormateada}</h2>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Propiedad</th>
+                  <th>Asistencia</th>
+                  <th>Falla</th>
+                  <th>Retardo</th>
+                  <th>Evasion</th>
+                  <th>Falla Just</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${students.map((student, index) => `
+                  <tr key=${index}>
+                    <td>Valor</td>
+                    <td>${student.Asistencia}</td>
+                    <td>${student.Falla}</td>
+                    <td>${student.Retardo}</td>
+                    <td>${student.Evasion}</td>
+                    <td>${student.Falla_Justificada}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </body>
+      </html>
+    `;
+
+    const { uri } = await Print.printToFileAsync({ html: htmlContent });
+
+    const newUri = `${FileSystem.documentDirectory}${pdfFileName}`;
+    await FileSystem.moveAsync({
+      from: uri,
+      to: newUri,
+    });
+
+    await Sharing.shareAsync(newUri);
   };
-
-  const closeMenu = () => {
-    setIsMenuOpen(false);
-  };
-
-  const handleInstructions = () => {
-    setShowPdf(true);
-    setIsMenuOpen(false);
-  };
-
- /* const exportarAExcel = (datosApi, nombreArchivo) => {
-    // Aquí puedes implementar la lógica para exportar a Excel
-    // Ten en cuenta que esta funcionalidad puede no estar disponible en React Native
-  }; */
-
-  // const renderBarChart = (data) => {
-  //   // Aquí puedes implementar la lógica para renderizar el gráfico de barras
-  //   // Ten en cuenta que esta funcionalidad puede no estar disponible en React Native
-  // };
-
-  // const renderDonutChart = (data) => {
-  //   // Aquí puedes implementar la lógica para renderizar el gráfico de dona
-  //   // Ten en cuenta que esta funcionalidad puede no estar disponible en React Native
-  // };
-
-  if (showPdf) {
-    // Aquí puedes implementar la lógica para mostrar el PDF
-    // Ten en cuenta que esta funcionalidad puede no estar disponible en React Native
-  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Reportes Diarios</Text>
+      <Button title="Descargar PDF" onPress={createPdf} />
       <ScrollView horizontal>
         <View style={styles.column}>
           <Text style={styles.header}>Propiedad</Text>
@@ -122,6 +117,7 @@ const Reportes = () => {
           </View>
         ))}
       </ScrollView>
+
     </View>
   );
 };
@@ -131,6 +127,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
   },
   title: {
     fontSize: 24,
@@ -154,6 +151,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
 
 export default Reportes;
