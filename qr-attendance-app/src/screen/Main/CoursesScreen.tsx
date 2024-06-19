@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Button } from 'react-native';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system';
 
 const Cursos = () => {
   type Student = {
@@ -15,7 +18,7 @@ const Cursos = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://192.168.1.19:3000/api/estudiantes');
+        const response = await fetch('http://192.168.1.42:3000/api/estudiantes');
         const data = await response.json();
         setStudents(data.data);
       } catch (error) {
@@ -28,8 +31,66 @@ const Cursos = () => {
 
   const filteredStudents = students.filter(student => student.Curso === selectedCourse); // Filtra estudiantes por el curso seleccionado
 
+  const createPdf = async () => {
+    const fecha = new Date();
+    const fechaFormateada = `${fecha.getDate()}-${fecha.getMonth() + 1}-${fecha.getFullYear()}`;
+    const pdfFileName = `Registro_de_cursos_${fechaFormateada}.pdf`;
+
+    const htmlContent = `
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 30px; }
+            .header { font-size: 24px; margin-bottom: 10px; }
+            .subheader { font-size: 18px; margin-bottom: 5px; }
+            .table { width: 100%; border-collapse: collapse; }
+            .table, .table th, .table td { border: 1px solid black; }
+            .table th, .table td { padding: 10px; text-align: left; }
+          </style>
+        </head>
+        <body>
+          <div>
+            <h1 class="header">Lista de Cursos</h1>
+            <h2 class="subheader">Fecha: ${fechaFormateada}</h2>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Número</th>
+                  <th>Documento</th>
+                  <th>Nombres</th>
+                  <th>Registro de Asistencia</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${filteredStudents.map((student, index) => `
+                  <tr key=${student.Documento}>
+                    <td>${index + 1}</td>
+                    <td>${student.Documento}</td>
+                    <td>${student.Nombres}</td>
+                    <td>${student.Registro}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </body>
+      </html>
+    `;
+
+    const { uri } = await Print.printToFileAsync({ html: htmlContent });
+
+    const newUri = `${FileSystem.documentDirectory}${pdfFileName}`;
+    await FileSystem.moveAsync({
+      from: uri,
+      to: newUri,
+    });
+
+    await Sharing.shareAsync(newUri);
+  };
+
   return (
     <View style={styles.container}>
+            <Button title="Descargar PDF" onPress={createPdf} />
       <Text style={styles.title}>Lista de cursos</Text>
       <View style={styles.buttonContainer}>
         <TouchableOpacity 
@@ -63,6 +124,7 @@ const Cursos = () => {
           </View>
         )}
       />
+
     </View>
   );
 };
