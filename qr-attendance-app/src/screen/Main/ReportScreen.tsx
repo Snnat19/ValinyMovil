@@ -117,17 +117,17 @@ const Reportes = () => {
           </View>
         ))}
       </ScrollView>
+      
       <View style={{ height: 20 }} />
       <Text style={styles.title2}>Descarga en:</Text>
 
-{/* Imagen para descargar PDF */}
-<TouchableOpacity onPress={createPdf}>
-  <Image
-    source={require('../../../assets/pdf.png')}
-    style={styles.pdfIcon}
-  />
-</TouchableOpacity>
-    </View>
+      <TouchableOpacity onPress={createPdf}>
+        <Image
+          source={require('../../../assets/pdf.png')}
+          style={styles.pdfIcon}
+        />
+      </TouchableOpacity>
+          </View>
     
   );
 };
@@ -159,12 +159,12 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
   },
   header: {
-    width: '100%', // Cambia esto
+    width: '100%', 
     textAlign: 'center',
     fontWeight: 'bold',
   },
   cell: {
-    width: '100%', // Cambia esto
+    width: '100%', 
     textAlign: 'center',
   },
   pdfIcon: {

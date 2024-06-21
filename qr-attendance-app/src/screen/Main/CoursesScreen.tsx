@@ -125,17 +125,15 @@ const Cursos = () => {
           </View>
         )}
       />
-       {/* Espacio entre la lista y el ícono */}
       <View style={{ height: 20 }} />
       <Text style={styles.title2}>Descarga en:</Text>
 
-{/* Imagen para descargar PDF */}
-<TouchableOpacity onPress={createPdf}>
-  <Image
-    source={require('../../../assets/pdf.png')}
-    style={styles.pdfIcon}
-  />
-</TouchableOpacity>
+      <TouchableOpacity onPress={createPdf}>
+        <Image
+          source={require('../../../assets/pdf.png')}
+          style={styles.pdfIcon}
+        />
+      </TouchableOpacity>
 
     </View>
   );
