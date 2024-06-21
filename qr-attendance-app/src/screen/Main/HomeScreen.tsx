@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Platform, StyleSheet, TouchableOpacity } from 'react-native';
 import ToggleCameraButton from '../../components/ui/Main/Home/ToggleCameraButton';
 import CameraView from '../../components/ui/Main/Home/CameraView';
 import FormReturn from '../../components/ui/Main/Home/FormReturn';
@@ -40,7 +40,7 @@ const HomeScreen = () => {
               body: JSON.stringify(newData),
             };
       
-            const updateResponse = await fetch(`http://192.168.1.42:3000/api/estudiantes/${id}`, options);
+            const updateResponse = await fetch(`http://192.168.101.85:3000/api/estudiantes/${id}`, options);
             const updateData = await updateResponse.json();
       
             if (updateData.success) {
@@ -52,7 +52,7 @@ const HomeScreen = () => {
             console.error('Error fetching data: ', error);
           }
           
-      const response = await fetch(`http://192.168.1.42:3000/api/estudiantes/${id}`);
+      const response = await fetch(`http://192.168.101.85:3000/api/estudiantes/${id}`);
       const data = await response.json();
       setStudent(data.data);
 
@@ -60,6 +60,7 @@ const HomeScreen = () => {
   };
 
   return (
+    
     <View style={styles.container}>
       <Spacer vertical={20} />
       
@@ -84,7 +85,10 @@ const HomeScreen = () => {
           placeholder="Enter ID"
           style={styles.input}
         />
-        <Button title="Search" onPress={handleSearch} />
+        <TouchableOpacity style={styles.customButton} onPress={handleSearch}>
+      <Text style={styles.buttonText}>Buscar</Text>
+    </TouchableOpacity>
+
       </View>
 
       <View style={styles.titleContainer}>
@@ -98,14 +102,16 @@ const HomeScreen = () => {
           <View style={styles.cameraContainer}>
             <CameraView isActive={isCameraActive}  onScanned={handleScanned}/>
           </View>
+          
         ) : (
           student && (
-            <View>
-              <Text>{`Nombre: ${student.Nombres}`}</Text>
-              <Text>{`Documento: ${student.Documento}`}</Text>
-              <Text>{`Curso: ${student.Curso}`}</Text>
-              <Text>{`Registro: ${student.Registro}`}</Text>
-            </View>
+
+            <View style={styles.container2}>
+      <Text style={styles.info}>{`Nombre: ${student.Nombres}`}</Text>
+      <Text style={styles.info}>{`Documento: ${student.Documento}`}</Text>
+      <Text style={styles.info}>{`Curso: ${student.Curso}`}</Text>
+      <Text style={styles.info}>{`Registro: ${student.Registro}`}</Text>
+    </View>
           )
         )}
       </View>
@@ -113,16 +119,13 @@ const HomeScreen = () => {
   );
 };
 
-// ... el resto de tu código
-
-
-
-
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    marginBottom: 10,
+    marginTop: -30,
   },
   header: {
     flexDirection: 'row',
@@ -165,7 +168,7 @@ const styles = StyleSheet.create({
     marginVertical: 16,
   },
   title: {
-    fontSize: 20,
+    fontSize: 35,
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -175,9 +178,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cameraContainer: {
-    width: 250,
+    width: 185,
     height: 250,
-    backgroundColor: '#000',
+    marginTop: -150,
   },
   idInputContainer: {
     flexDirection: 'row',
@@ -186,9 +189,48 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
+    borderRadius: 10,
     padding: 10,
     marginRight: 8,
     flex: 1,
+  },
+  customButton: {
+    backgroundColor: '#2D5DC2',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 50,
+    marginTop: 1,
+  },
+  buttonText: {
+    color: '#FFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  container2: {
+    marginTop: -250,
+    width: 350,
+    height: 130,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
+  },
+  info: {
+    textAlign: 'left',
+    fontWeight: 'bold',
+    marginBottom: 5,
   },
 });
 

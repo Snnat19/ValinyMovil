@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Button } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
@@ -18,7 +18,7 @@ const Cursos = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://192.168.1.42:3000/api/estudiantes');
+        const response = await fetch('http://192.168.101.85:3000/api/estudiantes');
         const data = await response.json();
         setStudents(data.data);
       } catch (error) {
@@ -90,7 +90,7 @@ const Cursos = () => {
 
   return (
     <View style={styles.container}>
-            <Button title="Descargar PDF" onPress={createPdf} />
+            
       <Text style={styles.title}>Lista de cursos</Text>
       <View style={styles.buttonContainer}>
         <TouchableOpacity 
@@ -124,6 +124,17 @@ const Cursos = () => {
           </View>
         )}
       />
+       {/* Espacio entre la lista y el ícono */}
+      <View style={{ height: 20 }} />
+      <Text style={styles.title2}>Descarga en:</Text>
+
+{/* Imagen para descargar PDF */}
+<TouchableOpacity onPress={createPdf}>
+  <Image
+    source={require('../../../assets/pdf.png')}
+    style={styles.pdfIcon}
+  />
+</TouchableOpacity>
 
     </View>
   );
@@ -132,13 +143,20 @@ const Cursos = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 50,
+    paddingTop: 20,
+    marginBottom: 90,
     paddingHorizontal: 20,
   },
   title: {
     fontSize: 24,
+    fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
+  },
+  title2: {
+    fontSize: 14,
+    marginBottom: 20,
+    textAlign: 'left',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -175,6 +193,11 @@ const styles = StyleSheet.create({
   cell: {
     width: '25%',
     textAlign: 'center',
+  },
+  pdfIcon: {
+    width: 50,
+    height: 50,
+    alignSelf: 'center',
   },
 });
 

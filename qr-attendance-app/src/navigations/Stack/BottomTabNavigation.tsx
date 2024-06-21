@@ -1,6 +1,6 @@
 // src/navigation/BottomTabNavigation.tsx
 import React from 'react';
-import { View, Image, Platform } from 'react-native';
+import { View, Image, Platform, Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../../screen/Main/HomeScreen';
 import ReportScreen from '../../screen/Main/ReportScreen';
@@ -38,7 +38,7 @@ const BottomTabNavigation = () => {
               style={{
                 width: 24,
                 height: 24,
-                tintColor: focused ? COLORS.primary : COLORS.black,
+                tintColor: focused ? '#043362' : 'black',
               }}
             />
           ),
@@ -55,7 +55,7 @@ const BottomTabNavigation = () => {
               style={{
                 width: 24,
                 height: 24,
-                tintColor: focused ? COLORS.primary : COLORS.black,
+                tintColor: focused ? '#043362' : 'black',
               }}
             />
           ),
@@ -72,7 +72,7 @@ const BottomTabNavigation = () => {
               style={{
                 width: 24,
                 height: 24,
-                tintColor: focused ? COLORS.primary : COLORS.black,
+                tintColor: focused ? '#043362' : 'black',
               }}
             />
           ),
@@ -89,7 +89,7 @@ const BottomTabNavigation = () => {
               style={{
                 width: 24,
                 height: 24,
-                tintColor: focused ? COLORS.primary : COLORS.black,
+                tintColor: focused ? '#043362' : 'black',
               }}
             />
           ),

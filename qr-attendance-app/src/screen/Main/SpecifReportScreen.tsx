@@ -37,7 +37,7 @@ const ReporteEspecifico: React.FC<ReporteEspecificoProps> = ({ setToken }) => {
   useEffect(() => {
     const cargarEstudiantes = async () => {
       try {
-        const response = await axios.get('http://192.168.1.42:3000/api/estudiantes');
+        const response = await axios.get('http://192.168.101.85:3000/api/estudiantes');
         console.log('Datos de estudiantes:', response.data);
         setEstudiantes(response.data.data);
       } catch (error) {
@@ -80,10 +80,8 @@ const ReporteEspecifico: React.FC<ReporteEspecificoProps> = ({ setToken }) => {
     setError(null);
   };
 
-
-
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.header}>Reportes Específicos</Text>
       <Text style={styles.title}>Reportes Diarios</Text>
       {Object.keys(estados).map(tipo => (
@@ -92,36 +90,41 @@ const ReporteEspecifico: React.FC<ReporteEspecificoProps> = ({ setToken }) => {
           <Text style={registroSeleccionado === tipo ? styles.selectedText : styles.text}>{estados[tipo]}</Text>
         </TouchableOpacity>
       ))}
+      
       <View style={styles.studentsContainer}>
         <Text style={styles.studentsHeader}>Estudiantes:</Text>
         {error && <Text style={styles.error}>{error}</Text>}
         {filteredStudents.length === 0 && !error && (
           <Text style={styles.noStudents}>No se encontraron estudiantes para el estado seleccionado.</Text>
         )}
-        <FlatList
-          data={filteredStudents}
-          keyExtractor={(item) => item.Documento}
-          renderItem={({ item, index }) => (
-            <View style={[styles.studentRow, index % 2 === 0 ? styles.evenRow : styles.oddRow]}>
-              <Text style={styles.studentCell}>{index + 1}</Text>
-              <Text style={styles.studentCell}>{item.Documento}</Text>
-              <Text style={styles.studentCell}>{item.Nombres}</Text>
-              <Text style={styles.studentCell}>{item.Tipo_de_documento}</Text>
-              <Text style={styles.studentCell}>{item.Curso}</Text>
-            </View>
-          )}
-          ListHeaderComponent={() => (
-            <View style={styles.tableHeader}>
-              <Text style={styles.headerCell}>Número</Text>
-              <Text style={styles.headerCell}>Documento</Text>
-              <Text style={styles.headerCell}>Nombres</Text>
-              <Text style={styles.headerCell}>Tipo de documento</Text>
-              <Text style={styles.headerCell}>Curso</Text>
-            </View>
-          )}
-        />
+        
+        {/* Envuelve la FlatList en ScrollView con nestedScrollEnabled */}
+        <ScrollView nestedScrollEnabled={true} style={styles.scrollView}>
+          <FlatList
+            data={filteredStudents}
+            keyExtractor={(item) => item.Documento}
+            renderItem={({ item, index }) => (
+              <View style={[styles.studentRow, index % 2 === 0 ? styles.evenRow : styles.oddRow]}>
+                <Text style={styles.studentCell}>{index + 1}</Text>
+                <Text style={styles.studentCell}>{item.Documento}</Text>
+                <Text style={styles.studentCell}>{item.Nombres}</Text>
+                <Text style={styles.studentCell}>{item.Tipo_de_documento}</Text>
+                <Text style={styles.studentCell}>{item.Curso}</Text>
+              </View>
+            )}
+            ListHeaderComponent={() => (
+              <View style={styles.tableHeader}>
+                <Text style={styles.headerCell}>Número</Text>
+                <Text style={styles.headerCell}>Documento</Text>
+                <Text style={styles.headerCell}>Nombres</Text>
+                <Text style={styles.headerCell}>Tipo de documento</Text>
+                <Text style={styles.headerCell}>Curso</Text>
+              </View>
+            )}
+          />
+        </ScrollView>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -129,7 +132,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    marginTop: 50,
+    marginTop: -10,
+    marginBottom: 45,
     backgroundColor: '#F9FAFB',
   },
   header: {
@@ -147,7 +151,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: 'left',
   },
   listItem: {
     flexDirection: 'row',
@@ -180,6 +184,7 @@ const styles = StyleSheet.create({
     borderColor: '#E5E7EB',
     padding: 20,
     backgroundColor: '#FFFFFF',
+    flex: 1, 
   },
   studentsHeader: {
     fontSize: 18,
@@ -225,6 +230,9 @@ const styles = StyleSheet.create({
     color: '#4B5563',
     paddingHorizontal: 8,
     flexWrap: 'wrap',
+  },
+  scrollView: {
+    flex: 1, 
   },
 });
 

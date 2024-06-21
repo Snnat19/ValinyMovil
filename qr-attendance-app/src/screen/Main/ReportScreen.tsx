@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, Button, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
@@ -21,7 +21,7 @@ const Reportes = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://192.168.1.42:3000/api/porcentajes/porcentaje_registros');
+        const response = await fetch('http://192.168.101.85:3000/api/porcentajes/porcentaje_registros');
         const data = await response.json();
         setStudents(data.data);
       } catch (error) {
@@ -96,7 +96,6 @@ const Reportes = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Reportes Diarios</Text>
-      <Button title="Descargar PDF" onPress={createPdf} />
       <ScrollView horizontal>
         <View style={styles.column}>
           <Text style={styles.header}>Propiedad</Text>
@@ -117,8 +116,18 @@ const Reportes = () => {
           </View>
         ))}
       </ScrollView>
+      <View style={{ height: 20 }} />
+      <Text style={styles.title2}>Descarga en:</Text>
 
+{/* Imagen para descargar PDF */}
+<TouchableOpacity onPress={createPdf}>
+  <Image
+    source={require('../../../assets/pdf.png')}
+    style={styles.pdfIcon}
+  />
+</TouchableOpacity>
     </View>
+    
   );
 };
 
@@ -128,10 +137,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    marginBottom: 90,
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
+    fontWeight: 'bold',
+  },
+    title2: {
+    fontSize: 14,
+    marginBottom: 20,
+    textAlign: 'left',
   },
   column: {
     flexDirection: 'column',
@@ -149,6 +165,11 @@ const styles = StyleSheet.create({
   cell: {
     width: '100%', // Cambia esto
     textAlign: 'center',
+  },
+  pdfIcon: {
+    width: 50,
+    height: 50,
+    alignSelf: 'center',
   },
 });
 
