@@ -1,73 +1,53 @@
 import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Button, Alert, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-//import { UserContext } from '../App'; // Importa el contexto
+import { useUser } from '../../context/UserContext'; // Importar useUser desde el contexto
 
 function Login() {
   const [usuario, setUsuario] = useState('');
-  const [contraseña, setContraseña] = useState(''); 
+  const [contraseña, setContraseña] = useState('');
   const navigation = useNavigation();
-  //const { setUserData } = useContext(UserContext); // Usa el contexto
+  const { setUser } = useUser(); // Obtener setUser del contexto
 
   const handleSubmit = async () => {
-    // Datos a enviar
     const data = {
       ID_Admin: usuario,
       password: contraseña,
     };
   
-    // Opciones de la solicitud fetch
     const options = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     };
   
-    // Realizar la solicitud a la API
     try {
-      const response = await fetch('http://192.168.1.42:3000/api/administradores/authenticate', options);
-      const data = await response.json();
+      const response = await fetch('http://192.168.1.19:3000/api/administradores/authenticate', options);
+      const userData = await response.json();
 
-      // Aquí puedes manejar la respuesta de la API
-      if (data.success) {
-        // Guardar el token en el almacenamiento local
-       // await AsyncStorage.setItem('token', data.token);
-
-        // Actualizar los datos del usuario
-
-        /*
-        setUserData({
-          ID_Admin: usuario,
-          password: contraseña,
-        });
-        */
-
-        // Redirigir al usuario a la página de registros
-
-        
-        navigation.navigate('BottomTabNavigation');
-      } else if (data.message) {
-        Alert.alert(data.message);
+      if (userData.success) {
+        setUser(userData.data); // Establecer los datos del usuario en el contexto
+        navigation.navigate('BottomTabNavigation'); // Navegar a la pantalla principal
+      } else if (userData.message) {
+        Alert.alert(userData.message);
       }
     } catch (error) {
-      // Aquí puedes manejar cualquier error que ocurra durante la solicitud
       console.error('Error:', error);
     }
   };
 
   return (
-
     <View style={styles.container}>
       <View style={styles.formContainer}>
-       <Image
-        source={require('./../../../assets/logonegro.png')} 
-        style={styles.logo}
-      />
-  <Text style={styles.title}>DEVIU SYSTEM</Text>
-  <Text style={styles.subtitle}>¡Bienvenido!</Text>
-  <Text style={styles.subtitle}>Es un gusto tenerte de vuelta</Text>
-   
-  <View style={styles.inputGroup}>
+        <Image
+          source={require('./../../../assets/logonegro.png')} 
+          style={styles.logo}
+        />
+        <Text style={styles.title}>DEVIU SYSTEM</Text>
+        <Text style={styles.subtitle}>¡Bienvenido!</Text>
+        <Text style={styles.subtitle}>Es un gusto tenerte de vuelta</Text>
+       
+        <View style={styles.inputGroup}>
           <Text style={styles.label}>Usuario:</Text>
           <TextInput
             style={styles.input}
@@ -87,15 +67,15 @@ function Login() {
             secureTextEntry
           />
         </View>
+        
         <TouchableOpacity
           style={styles.button}
           onPress={handleSubmit}
         >
           <Text style={styles.buttonText}>Iniciar sesión</Text>
         </TouchableOpacity>
-</View>
-</View>
-    
+      </View>
+    </View>
   );
 }
 
@@ -139,15 +119,15 @@ const styles = {
     color: '#0E0F2A', 
     marginBottom: 5,
   },
-    input: {
-      height: 40,
-      borderColor: '#D8D8D8',
-      borderWidth: 1,
-      marginBottom: 20,
-      paddingLeft: 10,
-      width: '100%',
-      maxWidth: 300,
-      borderRadius: 10, 
+  input: {
+    height: 40,
+    borderColor: '#D8D8D8',
+    borderWidth: 1,
+    marginBottom: 20,
+    paddingLeft: 10,
+    width: '100%',
+    maxWidth: 300,
+    borderRadius: 10, 
   },
   button: {
     width: '100%',
@@ -164,4 +144,5 @@ const styles = {
     fontWeight: 'bold',
   },
 };
+
 export default Login;
