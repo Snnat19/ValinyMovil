@@ -37,7 +37,7 @@ app.use((err, req, res, next) => {
 });
 
 if (require.main === module) {
- app.listen(port, '192.168.1.15' || 'localhost', () => {
+ app.listen(port, '192.168.1.19' || 'localhost', () => {
    console.log('Aplicación de NodeJS ' + process.pid + ' inició en el puerto ' + port);
  });
 }
