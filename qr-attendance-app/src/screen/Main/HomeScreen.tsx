@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Platform, TouchableOpacity } from 'react-native';
 import ToggleCameraButton from '../../components/ui/Main/Home/ToggleCameraButton';
 import CameraView from '../../components/ui/Main/Home/CameraView';
 import Spacer from '../../components/ui/Shared/Spacer';
@@ -47,7 +47,7 @@ const HomeScreen = () => {
         body: JSON.stringify(newData),
       };
 
-      const updateResponse = await fetch(`http://192.168.1.10:3000/api/estudiantes/${id}}`, options);
+      const updateResponse = await fetch(`http://192.168.101.85:3000/api/estudiantes/${id}}`, options);
       const updateData = await updateResponse.json();
 
       if (updateData.success) {
@@ -60,7 +60,7 @@ const HomeScreen = () => {
     }
 
     try {
-      const response = await fetch(`http://192.168.1.10:3000/api/estudiantes/${id}`);
+      const response = await fetch(`http://192.168.101.85:3000/api/estudiantes/${id}`);
       const data = await response.json();
       setStudent(data.data);
     } catch (error) {
@@ -93,7 +93,10 @@ const HomeScreen = () => {
           placeholder="Ingrese el ID"
           style={styles.input}
         />
-        <Button title="Buscar" onPress={handleSearch} />
+         <TouchableOpacity style={styles.customButton} onPress={handleSearch}>
+      <Text style={styles.buttonText}>Buscar</Text>
+    </TouchableOpacity>
+
       </View>
 
       <View style={styles.titleContainer}>
@@ -126,6 +129,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    marginBottom: 10,
+    marginTop: -30,
   },
   header: {
     flexDirection: 'row',
@@ -168,7 +173,7 @@ const styles = StyleSheet.create({
     marginVertical: 16,
   },
   title: {
-    fontSize: 20,
+    fontSize: 35,
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -178,9 +183,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cameraContainer: {
-    width: 250,
+    width: 185,
     height: 250,
-    backgroundColor: '#000',
+    marginTop: -150,
   },
   idInputContainer: {
     flexDirection: 'row',
@@ -189,9 +194,48 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
+    borderRadius: 10,
     padding: 10,
     marginRight: 8,
     flex: 1,
+  },
+  customButton: {
+    backgroundColor: '#2D5DC2',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 50,
+    marginTop: 1,
+  },
+  buttonText: {
+    color: '#FFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  container2: {
+    marginTop: -250,
+    width: 350,
+    height: 130,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
+  },
+  info: {
+    textAlign: 'left',
+    fontWeight: 'bold',
+    marginBottom: 5,
   },
 });
 
