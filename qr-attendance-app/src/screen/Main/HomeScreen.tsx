@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Platform, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import ToggleCameraButton from '../../components/ui/Main/Home/ToggleCameraButton';
 import CameraView from '../../components/ui/Main/Home/CameraView';
-import FormReturn from '../../components/ui/Main/Home/FormReturn';
 import Spacer from '../../components/ui/Shared/Spacer';
+import { useUser } from '../../context/UserContext'; // Importar useUser desde el contexto
 
 type Student = {
   Administradores: string;
@@ -19,51 +19,59 @@ const HomeScreen = () => {
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [id, setId] = useState('');
   const [student, setStudent] = useState<Student | null>(null);
+  const { user } = useUser(); // Obtener los datos del usuario del contexto
+
+  useEffect(() => {
+    // Puedes realizar alguna acción inicial aquí si es necesario
+  }, []);
 
   const handleToggleCamera = (isActive: boolean) => {
     setIsCameraActive(isActive);
   };
+
   const handleScanned = (data: { text: string }) => {
-    // maneja los datos escaneados aquí
+    // Maneja los datos escaneados aquí
     console.log(data.text);
   };
+
   const handleSearch = async () => {
     try {
-            // Actualizar el campo Registro a 1
-            const newData = {
-              "Registro": 1
-            };
-      
-            const options = {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(newData),
-            };
-      
-            const updateResponse = await fetch(`http://192.168.101.85:3000/api/estudiantes/${id}`, options);
-            const updateData = await updateResponse.json();
-      
-            if (updateData.success) {
-              alert('Registro exitoso');
-            } else {
-              alert('Error al actualizar el registro');
-            }
-          } catch (error) {
-            console.error('Error fetching data: ', error);
-          }
-          
-      const response = await fetch(`http://192.168.101.85:3000/api/estudiantes/${id}`);
+      // Actualizar el campo Registro a 1
+      const newData = {
+        Registro: 1
+      };
+
+      const options = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newData),
+      };
+
+      const updateResponse = await fetch(`http://192.168.1.10:3000/api/estudiantes/${id}}`, options);
+      const updateData = await updateResponse.json();
+
+      if (updateData.success) {
+        alert('Registro exitoso');
+      } else {
+        alert('Error al actualizar el registro');
+      }
+    } catch (error) {
+      console.error('Error fetching data: ', error);
+    }
+
+    try {
+      const response = await fetch(`http://192.168.1.10:3000/api/estudiantes/${id}`);
       const data = await response.json();
       setStudent(data.data);
-
-
+    } catch (error) {
+      console.error('Error fetching data: ', error);
+    }
   };
 
   return (
-    
     <View style={styles.container}>
       <Spacer vertical={20} />
-      
+
       <View style={styles.header}>
         <Text style={styles.headerText}>Inicio</Text>
         <Text style={styles.headerText}>Lectura códigos QR</Text>
@@ -73,8 +81,8 @@ const HomeScreen = () => {
       <View style={styles.profile}>
         <View style={styles.photo} />
         <View style={styles.profileTextContainer}>
-          <Text style={styles.profileName}>Nombre</Text>
-          <Text style={styles.profilePosition}>Cargo</Text>
+          <Text style={styles.profileName}>{user?.Nombres}</Text>
+          <Text style={styles.profilePosition}>{user?.Rol}</Text>
         </View>
       </View>
 
@@ -82,13 +90,10 @@ const HomeScreen = () => {
         <TextInput
           value={id}
           onChangeText={setId}
-          placeholder="Enter ID"
+          placeholder="Ingrese el ID"
           style={styles.input}
         />
-        <TouchableOpacity style={styles.customButton} onPress={handleSearch}>
-      <Text style={styles.buttonText}>Buscar</Text>
-    </TouchableOpacity>
-
+        <Button title="Buscar" onPress={handleSearch} />
       </View>
 
       <View style={styles.titleContainer}>
@@ -100,18 +105,16 @@ const HomeScreen = () => {
       <View style={styles.mainContent}>
         {isCameraActive ? (
           <View style={styles.cameraContainer}>
-            <CameraView isActive={isCameraActive}  onScanned={handleScanned}/>
+            <CameraView isActive={isCameraActive} onScanned={handleScanned} />
           </View>
-          
         ) : (
           student && (
-
-            <View style={styles.container2}>
-      <Text style={styles.info}>{`Nombre: ${student.Nombres}`}</Text>
-      <Text style={styles.info}>{`Documento: ${student.Documento}`}</Text>
-      <Text style={styles.info}>{`Curso: ${student.Curso}`}</Text>
-      <Text style={styles.info}>{`Registro: ${student.Registro}`}</Text>
-    </View>
+            <View>
+              <Text>{`Nombre: ${student.Nombres}`}</Text>
+              <Text>{`Documento: ${student.Documento}`}</Text>
+              <Text>{`Curso: ${student.Curso}`}</Text>
+              <Text>{`Registro: ${student.Registro}`}</Text>
+            </View>
           )
         )}
       </View>
@@ -119,13 +122,10 @@ const HomeScreen = () => {
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    marginBottom: 10,
-    marginTop: -30,
   },
   header: {
     flexDirection: 'row',
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     marginVertical: 16,
   },
   title: {
-    fontSize: 35,
+    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -178,9 +178,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cameraContainer: {
-    width: 185,
+    width: 250,
     height: 250,
-    marginTop: -150,
+    backgroundColor: '#000',
   },
   idInputContainer: {
     flexDirection: 'row',
@@ -189,48 +189,9 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 10,
     padding: 10,
     marginRight: 8,
     flex: 1,
-  },
-  customButton: {
-    backgroundColor: '#2D5DC2',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 50,
-    marginTop: 1,
-  },
-  buttonText: {
-    color: '#FFFF',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  container2: {
-    marginTop: -250,
-    width: 350,
-    height: 130,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 5,
-      },
-    }),
-  },
-  info: {
-    textAlign: 'left',
-    fontWeight: 'bold',
-    marginBottom: 5,
   },
 });
 

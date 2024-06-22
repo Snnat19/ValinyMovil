@@ -21,7 +21,7 @@ const Reportes = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://192.168.101.85:3000/api/porcentajes/porcentaje_registros');
+        const response = await fetch('http://192.168.1.10:3000/api/porcentajes/porcentaje_registros');
 
         const data = await response.json();
         setStudents(data.data);
