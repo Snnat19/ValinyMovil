@@ -48,7 +48,7 @@ const HomeScreen = () => {
         body: JSON.stringify(newData),
       };
 
-      const updateResponse = await fetch(`http://192.168.20.23:3000/api/estudiantes/${id}`, options);
+      const updateResponse = await fetch(`http://192.168.101.85:3000/api/estudiantes/${id}`, options);
       const updateData = await updateResponse.json();
 
       if (updateData.success) {
@@ -61,7 +61,7 @@ const HomeScreen = () => {
     }
 
     try {
-      const response = await fetch(`http://192.168.20.23:3000/api/estudiantes/${id}`);
+      const response = await fetch(`http://192.168.101.85:3000/api/estudiantes/${id}`);
       const data = await response.json();
       setStudent(data.data);
     } catch (error) {
@@ -88,12 +88,15 @@ const HomeScreen = () => {
       </View>
 
       <View style={styles.idInputContainer}>
-        <TextInput
-          value={id}
-          onChangeText={setId}
-          placeholder="Ingrese el ID"
-          style={styles.input}
-        />
+      <TextInput
+        value={id}
+        onChangeText={(text) => {
+        setId(text.replace(/[^0-9]/g, '')); 
+        }}
+        placeholder="Enter ID"
+        style={styles.input}
+        keyboardType="numeric"
+      />
         <TouchableOpacity style={styles.customButton} onPress={handleSearch}>
           <Text style={styles.buttonText}>Buscar</Text>
         </TouchableOpacity>
@@ -115,12 +118,12 @@ const HomeScreen = () => {
           </View>
         ) : (
           student && (
-            <View>
-              <Text>{`Nombre: ${student.Nombres}`}</Text>
-              <Text>{`Documento: ${student.Documento}`}</Text>
-              <Text>{`Curso: ${student.Curso}`}</Text>
-              <Text>{`Registro: ${student.Registro}`}</Text>
-            </View>
+            <View style={styles.container2}>
+      <Text style={styles.info}>{`Nombre: ${student.Nombres}`}</Text>
+      <Text style={styles.info}>{`Documento: ${student.Documento}`}</Text>
+      <Text style={styles.info}>{`Curso: ${student.Curso}`}</Text>
+      <Text style={styles.info}>{`Registro: ${student.Registro}`}</Text>
+    </View>
           )
         )}
       </View>
