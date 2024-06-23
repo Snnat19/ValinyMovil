@@ -13,7 +13,7 @@ function App() {
     <UserProvider>
       <NavigationContainer>
         <Stack.Navigator>
-          {/*<Stack.Screen name="Login" component={Login} />*/}
+          {<Stack.Screen name="Login" component={Login} />}
           <Stack.Screen name="BottomTabNavigation" component={BottomTabNavigation} />
         </Stack.Navigator>
       </NavigationContainer>

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
+import { StackedBarChart } from 'react-native-chart-kit';
 
 type Student = {
   Asistencia: number;
@@ -14,15 +15,11 @@ type Student = {
 
 const Reportes = () => {
   const [students, setStudents] = useState<Student[]>([]);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showPdf, setShowPdf] = useState(false);
-  const [admin, setAdmin] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://192.168.101.85:3000/api/porcentajes/porcentaje_registros');
-
+        const response = await fetch('http://192.168.20.23:3000/api/porcentajes/porcentaje_registros');
         const data = await response.json();
         setStudents(data.data);
       } catch (error) {
@@ -94,47 +91,87 @@ const Reportes = () => {
     await Sharing.shareAsync(newUri);
   };
 
+  if (students.length === 0) {
+    return <Text>Cargando datos...</Text>;
+  }
+
+  const chartData = {
+    labels: students.map((_, index) => `Est${index + 1}`),
+    legend: ['Asistencia', 'Falla', 'Retardo', 'Evasion', 'Falla Just'],
+    data: [
+      students.map(student => student.Asistencia),
+      students.map(student => student.Falla),
+      students.map(student => student.Retardo),
+      students.map(student => student.Evasion),
+      students.map(student => student.Falla_Justificada),
+    ],
+    barColors: ['#2E95CD', '#2E95CD', '#2E95CD', '#2E95CD', '#2E95CD'], // Colors for each category
+  };
+
   return (
     <View style={styles.container}>
-    <Text style={styles.title}>Reportes Diarios</Text>
-    <ScrollView horizontal>
-      <View style={styles.table}>
-        <View style={styles.tableRow}>
-          <Text style={styles.headerCell}>Propiedad</Text>
-          <Text style={styles.headerCell}>Valor</Text>
+      <Text style={styles.title}>Reportes Diarios</Text>
+      <ScrollView horizontal={true}>
+        <View style={styles.tableContainer}>
+          <View style={styles.table}>
+            <View style={styles.tableRow}>
+              <Text style={styles.headerCell}>Propiedad</Text>
+              <Text style={styles.headerCell}>Valor</Text>
+            </View>
+            {students.map((student, index) => (
+              <View key={index} style={[styles.tableRow, index % 2 === 0 ? styles.evenRow : styles.oddRow]}>
+                <Text style={styles.cell}>Asistencia</Text>
+                <Text style={styles.cell}>{student.Asistencia}</Text>
+              </View>
+            ))}
+            {students.map((student, index) => (
+              <View key={index} style={[styles.tableRow, index % 2 === 0 ? styles.evenRow : styles.oddRow]}>
+                <Text style={styles.cell}>Falla</Text>
+                <Text style={styles.cell}>{student.Falla}</Text>
+              </View>
+            ))}
+            {students.map((student, index) => (
+              <View key={index} style={[styles.tableRow, index % 2 === 0 ? styles.evenRow : styles.oddRow]}>
+                <Text style={styles.cell}>Retardo</Text>
+                <Text style={styles.cell}>{student.Retardo}</Text>
+              </View>
+            ))}
+            {students.map((student, index) => (
+              <View key={index} style={[styles.tableRow, index % 2 === 0 ? styles.evenRow : styles.oddRow]}>
+                <Text style={styles.cell}>Evasion</Text>
+                <Text style={styles.cell}>{student.Evasion}</Text>
+              </View>
+            ))}
+            {students.map((student, index) => (
+              <View key={index} style={[styles.tableRow, index % 2 === 0 ? styles.evenRow : styles.oddRow]}>
+                <Text style={styles.cell}>Falla Justificada</Text>
+                <Text style={styles.cell}>{student.Falla_Justificada}</Text>
+              </View>
+            ))}
+          </View>
         </View>
-        {students.map((student, index) => (
-          <View key={index} style={[styles.tableRow, index % 2 === 0 ? styles.evenRow : styles.oddRow]}>
-            <Text style={styles.cell}>Asistencia    </Text>
-            <Text style={styles.cell}>{student.Asistencia}</Text>
-          </View>
-        ))}
-        {students.map((student, index) => (
-          <View key={index} style={[styles.tableRow2, index % 2 === 0 ? styles.evenRow2 : styles.oddRow]}>
-            <Text style={styles.cell}>Falla               </Text>
-            <Text style={styles.cell}>{student.Falla}</Text>
-          </View>
-        ))}
-        {students.map((student, index) => (
-          <View key={index} style={[styles.tableRow, index % 2 === 0 ? styles.evenRow : styles.oddRow]}>
-            <Text style={styles.cell}>Retardo          </Text>
-            <Text style={styles.cell}>{student.Retardo}</Text>
-          </View>
-        ))}
-        {students.map((student, index) => (
-          <View key={index} style={[styles.tableRow2, index % 2 === 0 ? styles.evenRow2 : styles.oddRow]}>
-            <Text style={styles.cell}>Evasion                </Text>
-            <Text style={styles.cell}>{student.Evasion}</Text>
-          </View>
-        ))}
-        {students.map((student, index) => (
-          <View key={index} style={[styles.tableRow, index % 2 === 0 ? styles.evenRow : styles.oddRow]}>
-            <Text style={styles.cell}>Falla Justificada</Text>
-            <Text style={styles.cell}>{student.Falla_Justificada}</Text>
-          </View>
-        ))}
-      </View>
-    </ScrollView>
+      </ScrollView>
+
+      <StackedBarChart
+    
+        style={{
+          marginVertical: 8,
+          borderRadius: 16
+        }}
+        data={chartData}
+        width={Dimensions.get("window").width - 30}
+        height={220}
+        chartConfig={{
+          backgroundGradientFrom: "#f0f0f0", // Light gray background
+          backgroundGradientTo: "#f0f0f0", // Light gray background
+          color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Black labels
+          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Black labels
+          barPercentage: 1,
+        }}
+        yAxisLabel=""
+        yAxisSuffix=""
+      />
+
       <View style={{ height: 20 }} />
       <Text style={styles.title3}>Descarga en:</Text>
 
@@ -144,8 +181,7 @@ const Reportes = () => {
           style={styles.pdfIcon}
         />
       </TouchableOpacity>
-          </View>
-    
+    </View>
   );
 };
 
@@ -162,35 +198,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontWeight: 'bold',
   },
-    title3: {
+  title3: {
     fontSize: 14,
     marginBottom: 20,
     textAlign: 'left',
   },
-  column: {
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  header: {
-    width: '100%', 
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  cell: {
-    width: '100%', 
-    textAlign: 'center',
-    flex: 1,
-    paddingVertical: 37.4, // Ajusta el espacio vertical dentro de la celda
-    paddingHorizontal: 60,
-  },
-  pdfIcon: {
-    width: 50,
-    height: 50,
-    alignSelf: 'center',
+  tableContainer: {
+    width: Dimensions.get('window').width - 40,
+    maxHeight: 200,
   },
   table: {
     width: '100%',
@@ -199,12 +214,7 @@ const styles = StyleSheet.create({
     borderColor: '#D5D5D5',
     borderRadius: 5,
   },
-tableRow: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#D5D5D5',
-  },
-  tableRow2: {
+  tableRow: {
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: '#D5D5D5',
@@ -216,15 +226,21 @@ tableRow: {
     fontWeight: 'bold',
     textAlign: 'center',
   },
-
+  cell: {
+    flex: 1,
+    padding: 10,
+    textAlign: 'center',
+  },
   evenRow: {
     backgroundColor: '#fff',
   },
-  evenRow2: {
-    backgroundColor: '#BFDBFE',
-  },
   oddRow: {
     backgroundColor: '#BFDBFE',
+  },
+  pdfIcon: {
+    width: 50,
+    height: 50,
+    alignSelf: 'center',
   },
 });
 
