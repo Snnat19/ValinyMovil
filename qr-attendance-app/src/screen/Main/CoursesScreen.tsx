@@ -161,11 +161,12 @@ title: {
   fontSize: 24,
   fontWeight: 'bold',
   marginBottom: 20,
+  marginTop: 0,
   textAlign: 'center',
 },
 title2: {
   fontSize: 14,
-  marginBottom: 10,
+  marginBottom: 1,
   textAlign: 'left',
 },
 buttonContainer: {
