@@ -96,30 +96,47 @@ const Reportes = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Reportes Diarios</Text>
-      <ScrollView horizontal>
-        <View style={styles.column}>
-          <Text style={styles.header}>Propiedad</Text>
-          <Text style={styles.cell}>Asistencia</Text>
-          <Text style={styles.cell}>Falla</Text>
-          <Text style={styles.cell}>Retardo</Text>
-          <Text style={styles.cell}>Evasion</Text>
-          <Text style={styles.cell}>Falla Just</Text>
+    <Text style={styles.title}>Reportes Diarios</Text>
+    <ScrollView horizontal>
+      <View style={styles.table}>
+        <View style={styles.tableRow}>
+          <Text style={styles.headerCell}>Propiedad</Text>
+          <Text style={styles.headerCell}>Valor</Text>
         </View>
         {students.map((student, index) => (
-          <View key={index} style={styles.column}>
-            <Text style={styles.header}>Valor</Text>
+          <View key={index} style={[styles.tableRow, index % 2 === 0 ? styles.evenRow : styles.oddRow]}>
+            <Text style={styles.cell}>Asistencia    </Text>
             <Text style={styles.cell}>{student.Asistencia}</Text>
+          </View>
+        ))}
+        {students.map((student, index) => (
+          <View key={index} style={[styles.tableRow2, index % 2 === 0 ? styles.evenRow2 : styles.oddRow]}>
+            <Text style={styles.cell}>Falla               </Text>
             <Text style={styles.cell}>{student.Falla}</Text>
+          </View>
+        ))}
+        {students.map((student, index) => (
+          <View key={index} style={[styles.tableRow, index % 2 === 0 ? styles.evenRow : styles.oddRow]}>
+            <Text style={styles.cell}>Retardo          </Text>
             <Text style={styles.cell}>{student.Retardo}</Text>
+          </View>
+        ))}
+        {students.map((student, index) => (
+          <View key={index} style={[styles.tableRow2, index % 2 === 0 ? styles.evenRow2 : styles.oddRow]}>
+            <Text style={styles.cell}>Evasion                </Text>
             <Text style={styles.cell}>{student.Evasion}</Text>
+          </View>
+        ))}
+        {students.map((student, index) => (
+          <View key={index} style={[styles.tableRow, index % 2 === 0 ? styles.evenRow : styles.oddRow]}>
+            <Text style={styles.cell}>Falla Justificada</Text>
             <Text style={styles.cell}>{student.Falla_Justificada}</Text>
           </View>
         ))}
-      </ScrollView>
-      
+      </View>
+    </ScrollView>
       <View style={{ height: 20 }} />
-      <Text style={styles.title2}>Descarga en:</Text>
+      <Text style={styles.title3}>Descarga en:</Text>
 
       <TouchableOpacity onPress={createPdf}>
         <Image
@@ -145,7 +162,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontWeight: 'bold',
   },
-    title2: {
+    title3: {
     fontSize: 14,
     marginBottom: 20,
     textAlign: 'left',
@@ -166,11 +183,48 @@ const styles = StyleSheet.create({
   cell: {
     width: '100%', 
     textAlign: 'center',
+    flex: 1,
+    paddingVertical: 37.4, // Ajusta el espacio vertical dentro de la celda
+    paddingHorizontal: 60,
   },
   pdfIcon: {
     width: 50,
     height: 50,
     alignSelf: 'center',
+  },
+  table: {
+    width: '100%',
+    flexDirection: 'column',
+    borderWidth: 1,
+    borderColor: '#D5D5D5',
+    borderRadius: 5,
+  },
+tableRow: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#D5D5D5',
+  },
+  tableRow2: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#D5D5D5',
+  },
+  headerCell: {
+    flex: 1,
+    padding: 10,
+    backgroundColor: '#BFDBFE',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+
+  evenRow: {
+    backgroundColor: '#fff',
+  },
+  evenRow2: {
+    backgroundColor: '#BFDBFE',
+  },
+  oddRow: {
+    backgroundColor: '#BFDBFE',
   },
 });
 

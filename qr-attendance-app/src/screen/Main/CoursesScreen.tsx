@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
@@ -89,30 +89,30 @@ const Cursos = () => {
     await Sharing.shareAsync(newUri);
   };
 
-  return (
+  return  (
     <View style={styles.container}>
-            
-      <Text style={styles.title}>Lista de cursos</Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity 
-          style={[styles.button, selectedCourse === '501' && styles.selectedButton]} 
-          onPress={() => setSelectedCourse('501')}
-        >
-          <Text style={styles.buttonText}>Curso 501</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={[styles.button, selectedCourse === '502' && styles.selectedButton]} 
-          onPress={() => setSelectedCourse('502')}
-        >
-          <Text style={styles.buttonText}>Curso 502</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={[styles.button, selectedCourse === '503' && styles.selectedButton]} 
-          onPress={() => setSelectedCourse('503')}
-        >
-          <Text style={styles.buttonText}>Curso 503</Text>
-        </TouchableOpacity>
-      </View>
+    <Text style={styles.title}>Lista de cursos</Text>
+    <View style={styles.buttonContainer}>
+      <TouchableOpacity 
+        style={[styles.button, selectedCourse === '501' && styles.selectedButton]} 
+        onPress={() => setSelectedCourse('501')}
+      >
+        <Text style={styles.buttonText}>Curso 501</Text>
+      </TouchableOpacity>
+      <TouchableOpacity 
+        style={[styles.button, selectedCourse === '502' && styles.selectedButton]} 
+        onPress={() => setSelectedCourse('502')}
+      >
+        <Text style={styles.buttonText}>Curso 502</Text>
+      </TouchableOpacity>
+      <TouchableOpacity 
+        style={[styles.button, selectedCourse === '503' && styles.selectedButton]} 
+        onPress={() => setSelectedCourse('503')}
+      >
+        <Text style={styles.buttonText}>Curso 503</Text>
+      </TouchableOpacity>
+    </View>
+    <View style={styles.contentContainer}>
       <FlatList
         data={filteredStudents}
         keyExtractor={(item) => item.Documento}
@@ -125,79 +125,92 @@ const Cursos = () => {
           </View>
         )}
       />
-      <View style={{ height: 20 }} />
-      <Text style={styles.title2}>Descarga en:</Text>
-
-      <TouchableOpacity onPress={createPdf}>
-        <Image
-          source={require('../../../assets/pdf.png')}
-          style={styles.pdfIcon}
-        />
-      </TouchableOpacity>
-
     </View>
-  );
+    <Text style={styles.title2}>Descarga en:</Text>
+    <TouchableOpacity onPress={createPdf}>
+      <Image
+        source={require('../../../assets/pdf.png')}
+        style={styles.pdfIcon}
+      />
+    </TouchableOpacity>
+  </View>
+);
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 20,
-    marginBottom: 90,
-    paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  title2: {
-    fontSize: 14,
-    marginBottom: 20,
-    textAlign: 'left',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 20,
-  },
-  button: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: '#A2CCFF',
-    borderRadius: 5,
-  },
-  selectedButton: {
-    backgroundColor: '#64AAFF',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  evenRow: {
-    backgroundColor: '#fff',
-  },
-  oddRow: {
-    backgroundColor: '#BFDBFE',
-  },
-  cell: {
-    width: '25%',
-    textAlign: 'center',
-  },
-  pdfIcon: {
-    width: 50,
-    height: 50,
-    alignSelf: 'center',
-  },
+container: {
+  flex: 1,
+  backgroundColor: '#f0f0f0',
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  marginBottom: 55,
+},
+contentContainer: {
+  flex: 1,
+  backgroundColor: '#ffffff',
+  borderRadius: 10,
+  padding: 20,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.8,
+  shadowRadius: 2,
+  elevation: 5,
+  marginTop: 20,
+},
+title: {
+  fontSize: 24,
+  fontWeight: 'bold',
+  marginBottom: 20,
+  textAlign: 'center',
+},
+title2: {
+  fontSize: 14,
+  marginBottom: 10,
+  textAlign: 'left',
+},
+buttonContainer: {
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  marginBottom: 20,
+},
+button: {
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  backgroundColor: '#A2CCFF',
+  borderRadius: 5,
+},
+selectedButton: {
+  backgroundColor: '#64AAFF',
+},
+buttonText: {
+  color: '#fff',
+  fontSize: 16,
+},
+row: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  paddingVertical: 10,
+  borderBottomWidth: 1,
+  borderBottomColor: '#ccc',
+},
+evenRow: {
+  backgroundColor: '#fff',
+},
+oddRow: {
+  backgroundColor: '#BFDBFE',
+},
+cell: {
+  width: '25%',
+  textAlign: 'center',
+  paddingVertical: 5,
+},
+pdfIcon: {
+  width: 50,
+  height: 50,
+  alignSelf: 'center',
+  marginTop: 10,
+},
 });
 
 export default Cursos;

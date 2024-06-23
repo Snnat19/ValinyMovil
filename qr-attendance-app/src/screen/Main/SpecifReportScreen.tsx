@@ -154,6 +154,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'left',
   },
+  title2: {
+    fontSize: 14,
+    marginBottom: 20,
+    textAlign: 'left',
+  },
   listItem: {
     flexDirection: 'row',
     alignItems: 'center',

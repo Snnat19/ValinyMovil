@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Platform, TouchableOpacity } from 'react-native';
+import { BarCodeScanner } from 'expo-barcode-scanner'; // Importa BarCodeScanner desde expo-barcode-scanner
 import ToggleCameraButton from '../../components/ui/Main/Home/ToggleCameraButton';
 import CameraView from '../../components/ui/Main/Home/CameraView';
 import Spacer from '../../components/ui/Shared/Spacer';
-import { useUser } from '../../context/UserContext'; // Importar useUser desde el contexto
+import { useUser } from '../../context/UserContext';
 
 type Student = {
   Administradores: string;
@@ -19,7 +20,7 @@ const HomeScreen = () => {
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [id, setId] = useState('');
   const [student, setStudent] = useState<Student | null>(null);
-  const { user } = useUser(); // Obtener los datos del usuario del contexto
+  const { user } = useUser();
 
   useEffect(() => {
     // Puedes realizar alguna acción inicial aquí si es necesario
@@ -29,9 +30,9 @@ const HomeScreen = () => {
     setIsCameraActive(isActive);
   };
 
-  const handleScanned = (data: { text: string }) => {
+  const handleScanned = ({ data }: { data: string }) => {
     // Maneja los datos escaneados aquí
-    console.log(data.text);
+    console.log(`Código QR escaneado: ${data}`);
   };
 
   const handleSearch = async () => {
@@ -47,7 +48,7 @@ const HomeScreen = () => {
         body: JSON.stringify(newData),
       };
 
-      const updateResponse = await fetch(`http://192.168.101.85:3000/api/estudiantes/${id}}`, options);
+      const updateResponse = await fetch(`http://192.168.2.103:3000/api/estudiantes/${id}`, options);
       const updateData = await updateResponse.json();
 
       if (updateData.success) {
@@ -74,7 +75,7 @@ const HomeScreen = () => {
 
       <View style={styles.header}>
         <Text style={styles.headerText}>Inicio</Text>
-        <Text style={styles.headerText}>Lectura códigos QR</Text>
+        <Text style={styles.headerText2}>Lectura códigos QR</Text>
         <ToggleCameraButton onToggleCamera={handleToggleCamera} />
       </View>
 
@@ -93,10 +94,9 @@ const HomeScreen = () => {
           placeholder="Ingrese el ID"
           style={styles.input}
         />
-         <TouchableOpacity style={styles.customButton} onPress={handleSearch}>
-      <Text style={styles.buttonText}>Buscar</Text>
-    </TouchableOpacity>
-
+        <TouchableOpacity style={styles.customButton} onPress={handleSearch}>
+          <Text style={styles.buttonText}>Buscar</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.titleContainer}>
@@ -108,7 +108,10 @@ const HomeScreen = () => {
       <View style={styles.mainContent}>
         {isCameraActive ? (
           <View style={styles.cameraContainer}>
-            <CameraView isActive={isCameraActive} onScanned={handleScanned} />
+            <BarCodeScanner
+              onBarCodeScanned={isCameraActive ? handleScanned : undefined}
+              style={styles.camera}
+            />
           </View>
         ) : (
           student && (
@@ -138,8 +141,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerText: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
+  },
+  headerText2: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: 'gray',
   },
   profile: {
     flexDirection: 'row',
@@ -236,6 +244,11 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontWeight: 'bold',
     marginBottom: 5,
+  },
+  camera: {
+    width: 185,
+    height: 250,
+    marginTop: -20,
   },
 });
 
