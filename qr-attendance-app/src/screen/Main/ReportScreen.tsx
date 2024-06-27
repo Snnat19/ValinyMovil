@@ -19,7 +19,7 @@ const Reportes = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://192.168.2.108:3000/api/porcentajes/porcentaje_registros');
+        const response = await fetch('http://192.168.101.79:3000/api/porcentajes/porcentaje_registros');
         const data = await response.json();
         setStudents(data.data);
       } catch (error) {
@@ -31,6 +31,11 @@ const Reportes = () => {
   }, []);
 
   const createPdf = async () => {
+    if (students.length === 0) {
+      console.warn('No hay datos para generar el PDF.');
+      return;
+    }
+
     const fecha = new Date();
     const fechaFormateada = `${fecha.getDate()}-${fecha.getMonth() + 1}-${fecha.getFullYear()}`;
     const pdfFileName = `Registro_de_cursos_${fechaFormateada}.pdf`;
@@ -55,21 +60,29 @@ const Reportes = () => {
               <thead>
                 <tr>
                   <th>Propiedad</th>
-                  <th>Asistencia</th>
-                  <th>Falla</th>
-                  <th>Retardo</th>
-                  <th>Evasion</th>
-                  <th>Falla Just</th>
+                  <th>Valor</th>
                 </tr>
               </thead>
               <tbody>
                 ${students.map((student, index) => `
                   <tr key=${index}>
-                    <td>Valor</td>
+                    <td>Asistencia</td>
                     <td>${student.Asistencia}</td>
+                  </tr>
+                  <tr key=${index}>
+                    <td>Falla</td>
                     <td>${student.Falla}</td>
+                  </tr>
+                  <tr key=${index}>
+                    <td>Retardo</td>
                     <td>${student.Retardo}</td>
+                  </tr>
+                  <tr key=${index}>
+                    <td>Evasion</td>
                     <td>${student.Evasion}</td>
+                  </tr>
+                  <tr key=${index}>
+                    <td>Falla Justificada</td>
                     <td>${student.Falla_Justificada}</td>
                   </tr>
                 `).join('')}
@@ -96,8 +109,8 @@ const Reportes = () => {
   }
 
   const chartData = {
-    labels: students.map((_, index) => `Est${index + 1}`),
-    legend: ['Asistencia', 'Falla', 'Retardo', 'Evasion', 'Falla Just'],
+    
+    legend: ['Asistencia', 'Falla', 'Retardo', 'Evasion', 'Falla Justificada'],
     data: [
       students.map(student => student.Asistencia),
       students.map(student => student.Falla),
@@ -105,7 +118,9 @@ const Reportes = () => {
       students.map(student => student.Evasion),
       students.map(student => student.Falla_Justificada),
     ],
-    barColors: ['#2E95CD', '#2E95CD', '#2E95CD', '#2E95CD', '#2E95CD'], // Colors for each category
+    barColors: ['#8CA1FF', '#8CB3FF', '#8CC8FF', '#8CEFFF',   ],
+    labels: students.map((_, index) => `Asiste${index + 1}`),
+    
   };
 
   return (
@@ -153,19 +168,18 @@ const Reportes = () => {
       </ScrollView>
 
       <StackedBarChart
-    
         style={{
           marginVertical: 8,
           borderRadius: 16
         }}
         data={chartData}
         width={Dimensions.get("window").width - 30}
-        height={220}
+        height={250}
         chartConfig={{
-          backgroundGradientFrom: "#f0f0f0", // Light gray background
-          backgroundGradientTo: "#f0f0f0", // Light gray background
-          color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Black labels
-          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Black labels
+          backgroundGradientFrom: "#f0f0f0", // Fondo gris claro
+          backgroundGradientTo: "#f0f0f0", // Fondo gris claro
+          color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Etiquetas negras
+          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Etiquetas negras
           barPercentage: 1,
         }}
         yAxisLabel=""

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Platform, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Image, StyleSheet, Platform, TouchableOpacity } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner'; // Importa BarCodeScanner desde expo-barcode-scanner
 import ToggleCameraButton from '../../components/ui/Main/Home/ToggleCameraButton';
 import CameraView from '../../components/ui/Main/Home/CameraView';
@@ -48,7 +48,7 @@ const HomeScreen = () => {
         body: JSON.stringify(newData),
       };
 
-      const updateResponse = await fetch(`http://192.168.2.103:3000/api/estudiantes/${id}`, options);
+      const updateResponse = await fetch(`http://192.168.101.79:3000/api/estudiantes/${id}`, options);
       const updateData = await updateResponse.json();
 
       if (updateData.success) {
@@ -61,7 +61,7 @@ const HomeScreen = () => {
     }
 
     try {
-      const response = await fetch(`http://192.168.2.103:3000/api/estudiantes/${id}`);
+      const response = await fetch(`http://192.168.101.79:3000/api/estudiantes/${id}`);
       const data = await response.json();
       setStudent(data.data);
     } catch (error) {
@@ -80,7 +80,7 @@ const HomeScreen = () => {
       </View>
 
       <View style={styles.profile}>
-        <View style={styles.photo} />
+      <Image source={require('./../../../assets/logonegro.png')} style={styles.photo} />
         <View style={styles.profileTextContainer}>
           <Text style={styles.profileName}>{user?.Nombres}</Text>
           <Text style={styles.profilePosition}>{user?.Rol}</Text>

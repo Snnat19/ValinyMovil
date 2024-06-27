@@ -21,7 +21,7 @@ const Cursos = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://192.168.2.103:3000/api/estudiantes');
+      const response = await fetch('http://192.168.101.79:3000/api/estudiantes');
       const data = await response.json();
       setStudents(data.data);
     } catch (error) {
@@ -46,7 +46,7 @@ const Cursos = () => {
     const updatedStudentData = { Registro: editStudentStatus };
 
     try {
-      const response = await fetch(`http://192.168.2.103:3000/api/estudiantes/${studentToEdit.Documento}`, {
+      const response = await fetch(`http://192.168.101.79:3000/api/estudiantes/${studentToEdit.Documento}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -162,7 +162,7 @@ const Cursos = () => {
                     style={styles.picker}
                     onValueChange={(itemValue) => setEditStudentStatus(itemValue)}
                   >
-                    <Picker.Item label="Falla" value="0" />
+                    <Picker.Item label="Falla" value="0"/>
                     <Picker.Item label="Asiste" value="1" />
                     <Picker.Item label="Retardo" value="2" />
                     <Picker.Item label="Evacion" value="3" />
@@ -282,12 +282,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   pickerContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     width: '50%',
+
+    
   },
   picker: {
-    width: '70%',
+    width: '100%',
+   
   },
   saveButton: {
     backgroundColor: '#4CAF50',
@@ -295,10 +298,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 5,
     marginLeft: 10,
+
   },
   saveButtonText: {
     color: '#fff',
     fontSize: 14,
+    textAlign: 'left',
   },
   pdfIcon: {
     width: 50,
